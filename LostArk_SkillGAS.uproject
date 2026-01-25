@@ -1,22 +1,23 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.7",
+	"EngineAssociation": "5.7", 
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "LostArk_SkillGAS",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"GameplayAbilities"
+			]
 		}
 	],
 	"Plugins": [
 		{
-			"Name": "ModelingToolsEditorMode",
-			"Enabled": true,
-			"TargetAllowList": [
-				"Editor"
-			]
+			"Name": "GameplayAbilities",
+			"Enabled": true
 		}
 	]
 }

@@ -8,7 +8,7 @@
 class UWidgetComponent;
 class UAttributeSet;
 
-UCLASS()
+UCLASS(Abstract)
 class LOSTARK_SKILLGAS_API ALA_BaseCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
@@ -26,7 +26,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 #pragma endregion
-	
+#pragma region CommonComponent
 	// 공통 외형 및 정보
 	UPROPERTY(EditAnywhere,Category="CharacterInfo | Name")
 	FText CharacterName;
@@ -34,7 +34,7 @@ protected:
 	TObjectPtr<UWidgetComponent> CommonWidgetComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="UI")
 	TSubclassOf<UUserWidget> MainHUDWidgetClass;
-	
+#pragma endregion
 	// 초기화 로직
 	virtual void InitAbilityActorInfo(); // ASC와 액터 연결
 	virtual void InitializeAttributes(); // 기본 스탯 주입
