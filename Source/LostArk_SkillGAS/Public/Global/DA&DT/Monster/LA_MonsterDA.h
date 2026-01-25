@@ -2,15 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Engine/DataTable.h"
 #include "Engine/DataAsset.h"
 #include "LA_MonsterDA.generated.h"
 
 class ULA_MonsterDA;
 
 USTRUCT(BlueprintType)
-struct FMonsterDT
+struct FMonsterDT : public FTableRowBase
 {
 	GENERATED_BODY()
+public:
 	UPROPERTY(EditAnywhere,Category="Name")
 	FGameplayTag MonsterName;
 	UPROPERTY(EditAnywhere,Category="Stat")

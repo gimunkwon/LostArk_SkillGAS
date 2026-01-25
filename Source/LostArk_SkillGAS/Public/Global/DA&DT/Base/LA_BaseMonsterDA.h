@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
+#include "Engine/DataTable.h"
 #include "LA_BaseMonsterDA.generated.h"
 
 class ULA_BaseMonsterDA;
