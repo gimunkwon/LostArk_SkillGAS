@@ -11,7 +11,7 @@ public class LostArk_SkillGAS : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { 
 			"Core", "CoreUObject"
 			, "Engine", "InputCore"
-			, "EnhancedInput",
+			, "EnhancedInput","UMG",
 			"GameplayAbilities","GameplayTags","GameplayTasks" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
