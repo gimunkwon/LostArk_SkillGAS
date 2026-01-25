@@ -8,7 +8,7 @@
 class ULA_BaseMonsterDA;
 
 USTRUCT(BlueprintType)
-struct FMonsterDT : public FTableRowBase
+struct FBaseMonsterDT : public FTableRowBase
 {
 	GENERATED_BODY()
 public:
