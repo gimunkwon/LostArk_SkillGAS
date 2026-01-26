@@ -5,11 +5,6 @@
 ALA_BaseCharacter::ALA_BaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
-	// ASC 생성
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 }
 
 
