@@ -15,6 +15,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Attributes")
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(ULA_BaseAttributeSet, Health);
+	// MAXHP
+	UPROPERTY(BlueprintReadOnly, Category="Attributes")
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(ULA_BaseAttributeSet, MaxHealth);
 	// 공격력
 	UPROPERTY(BlueprintReadOnly, Category="Attributes")
 	FGameplayAttributeData AttackPower;
