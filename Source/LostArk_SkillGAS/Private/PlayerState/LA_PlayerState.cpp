@@ -6,6 +6,7 @@
 #include "Character/Player/Class/LA_BasePlayer.h"
 #include "Global/DA&DT/Base/LA_BaseClassDA.h"
 #include "Global/DA&DT/Class/LA_ClassDA.h"
+#include "Net/UnrealNetwork.h"
 
 
 ALA_PlayerState::ALA_PlayerState()
@@ -21,6 +22,13 @@ ALA_PlayerState::ALA_PlayerState()
 	// 서버 업데이트 빈도
 	// NetUpdateFrequency = 100.f;
 	
+}
+
+void ALA_PlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	//SelectedClassTag가 네트워크를 타고 복제되도록 등록
+	DOREPLIFETIME(ALA_PlayerState, SelectedClassTag);
 }
 
 UAbilitySystemComponent* ALA_PlayerState::GetAbilitySystemComponent() const
@@ -84,4 +92,5 @@ void ALA_PlayerState::InitializeAttributesFromDataTable(FGameplayTag ClassTag)
 		
 	}
 }
+
 
