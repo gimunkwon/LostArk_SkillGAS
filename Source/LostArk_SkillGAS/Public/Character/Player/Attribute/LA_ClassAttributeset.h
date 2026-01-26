@@ -15,6 +15,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Attributes")
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(ULA_ClassAttributeset, Mana);
+	// MaxMP
+	UPROPERTY(BlueprintReadOnly, Category="Attributes")
+	FGameplayAttributeData MaxMP;
+	ATTRIBUTE_ACCESSORS(ULA_ClassAttributeset, MaxMP);
 	// 아덴 게이지
 	UPROPERTY(BlueprintReadOnly, Category="Attributes")
 	FGameplayAttributeData IdentityGauge;
