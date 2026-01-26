@@ -18,7 +18,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Name")
 	FText BaseClassDisplayName;
 	UPROPERTY(EditAnywhere,Category="DataAsset")
-	TSoftObjectPtr<ULA_BaseClassDA> BaseClassDA;
+	TSoftObjectPtr<ULA_BaseClassDA> BaseClassDA;	
 };
 
 
@@ -35,4 +35,6 @@ public:
 	}
 	UPROPERTY(EditAnywhere,Category="DataTable")
 	TMap<FGameplayTag, FDataTableRowHandle> BaseClassData;
+	UPROPERTY(EditAnywhere,Category="Mesh")
+	TObjectPtr<USkeletalMesh> BaseClassMesh;
 };
