@@ -4,6 +4,7 @@
 #include "Character/Base/LA_BaseCharacter.h"
 #include "LA_BasePlayer.generated.h"
 
+class ULA_BaseClassDA;
 class ULA_ClassAttributeset;
 class UCameraComponent;
 class USpringArmComponent;
@@ -15,8 +16,15 @@ class LOSTARK_SKILLGAS_API ALA_BasePlayer : public ALA_BaseCharacter
 public:
 	ALA_BasePlayer();
 	// GAS 초기화
+	virtual void InitAbilityActorInfo() override;
 protected:
 	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+	// DataAsset
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Data|DataAsset")
+	TObjectPtr<ULA_BaseClassDA> BaseClassDA;
+	
 #pragma region Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera | SpringArm")
 	USpringArmComponent* SpringArmComponent;
@@ -27,7 +35,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<ULA_ClassAttributeset> ClassAttributeSet;
 #pragma endregion
+#pragma region CharacterMesh
 	
-private:
-	void InitPlayerASC(); // 플레이어용 GAS 초기화 함수
+#pragma endregion
 };
