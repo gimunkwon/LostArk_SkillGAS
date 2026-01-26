@@ -8,4 +8,6 @@ UCLASS()
 class LOSTARK_SKILLGAS_API ALA_Gamemode : public AGameModeBase
 {
 	GENERATED_BODY()
+protected:
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 };
