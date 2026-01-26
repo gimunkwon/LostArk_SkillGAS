@@ -54,8 +54,12 @@ void ALA_BasePlayer::InitAbilityActorInfo()
 		// 데이터 주입 (서버에서만 주입하면 클라이언트로 복제됨)
 		// 하지만 클라이언트에서도 초기값이 필요하므로 안전하게 호출
 		
-		FGameplayTag ClassTag = FGameplayTag::RequestGameplayTag(FName("Class.Warrior.Berserker"));
-		PS->InitializeAttributesFromDataTable(ClassTag);
+		FGameplayTag ClassTag = PS->GetSelectedClassTag();
+		
+		if (ClassTag.IsValid())
+		{
+			PS->InitializeAttributesFromDataTable(ClassTag);
+		}
 		
 	}
 }

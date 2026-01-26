@@ -21,9 +21,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	// DataAsset
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Data|DataAsset")
-	TObjectPtr<ULA_BaseClassDA> BaseClassDA;
 	
 #pragma region Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera | SpringArm")
