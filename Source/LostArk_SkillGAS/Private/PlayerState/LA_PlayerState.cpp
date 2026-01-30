@@ -46,9 +46,7 @@ void ALA_PlayerState::InitializeAttributesFromDataTable(FGameplayTag ClassTag)
 	FGameplayTag BaseClassTag = ClassTag.RequestDirectParent();
 	// 행 이름 설정
 	FName SubClassRowName = FName(*ClassTag.GetTagLeafName().ToString());
-	// UE_LOG(LogTemp,Warning,TEXT("SubClassRowName : %s"),*SubClassRowName.ToString());
 	FName BaseClassRowName = FName(*BaseClassTag.GetTagLeafName().ToString());
-	// UE_LOG(LogTemp,Warning,TEXT("BaseClassRowName : %s"),*BaseClassRowName.ToString());
 	
 	// BaseClassDataTable에서 BaseClassDA 찾기
 	FBaseClassDT* BaseRow = BaseClassDataTable->FindRow<FBaseClassDT>(BaseClassRowName,TEXT("BaseDAFetch"));
@@ -60,11 +58,21 @@ void ALA_PlayerState::InitializeAttributesFromDataTable(FGameplayTag ClassTag)
 		ULA_BaseClassDA* BaseDA = BaseRow->BaseClassDA.Get();
 		if (BaseDA)
 		{
-			// [메시 적용] DA가 들고 있는 메시를 캐릭터에게 전달
+			
 			if (ALA_BasePlayer* BasePlayer = Cast<ALA_BasePlayer>(GetPawn()))
 			{
-				BasePlayer->GetMesh()->SetSkeletalMesh(BaseDA->BaseClassMesh);
+				// [메시 적용] DA가 들고 있는 메시를 캐릭터에게 전달
+				if (BaseDA->BaseClassMesh)
+				{
+					BasePlayer->GetMesh()->SetSkeletalMesh(BaseDA->BaseClassMesh);					
+				}
+				// [애님 클래스 적용]
+				if (BaseDA->BaseAnimClass)
+				{
+					BasePlayer->GetMesh()->SetAnimInstanceClass(BaseDA->BaseAnimClass);
+				}
 			}
+			
 			
 			// BaseDA 내부의 Map에서 세부 전직 DT핸들 찾기
 			if (BaseDA->BaseClassData.Contains(ClassTag))
