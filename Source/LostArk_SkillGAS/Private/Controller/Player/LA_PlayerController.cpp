@@ -40,7 +40,6 @@ void ALA_PlayerController::OnInputStarted()
 		{
 			// 플레이어 이동 RPC 함수
 			Hit.Location.Z = 0.f;
-			UE_LOG(LogTemp,Warning,TEXT("OnInputStarted"));
 			MyPawn->RequestToMove(Hit.Location);
 		}
 	}
