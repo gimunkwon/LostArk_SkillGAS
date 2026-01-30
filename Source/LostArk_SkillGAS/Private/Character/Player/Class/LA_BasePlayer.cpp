@@ -71,12 +71,12 @@ void ALA_BasePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (bIsMovingToPath)
+	if (bIsMovingToPath && IsLocallyControlled())
 	{
 		ProcessPathMovement();
 	}
 	
-	if (GEngine)
+	if (GEngine && IsLocallyControlled())
 	{
 		FString IsMovingToPath = bIsMovingToPath ? TEXT("true") : TEXT("false");
 		GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, IsMovingToPath);
@@ -132,11 +132,9 @@ void ALA_BasePlayer::Server_MoveToLocaiton_Implementation(FVector TargetLocation
 	}
 }
 
-// Client ?
+// Client
 void ALA_BasePlayer::ProcessPathMovement()
 {
-	UE_LOG(LogTemp, Warning, TEXT("PathPoints Num is %d"),PathPoints.Num());
-	UE_LOG(LogTemp,Warning,TEXT("CurrentWayPointIndex = %d"),CurrentWayPointIndex);
 	if (CurrentWayPointIndex >= PathPoints.Num())
 	{
 		Server_StopMove();
@@ -164,10 +162,12 @@ void ALA_BasePlayer::ProcessPathMovement()
 
 void ALA_BasePlayer::Server_StopMove_Implementation()
 {
-	UE_LOG(LogTemp,Warning,TEXT("Server Stop Movement On"));
+	
 	bIsMovingToPath = false;
 	CurrentWayPointIndex = 0;
 	PathPoints.Empty();
+	
+	
 }
 
 

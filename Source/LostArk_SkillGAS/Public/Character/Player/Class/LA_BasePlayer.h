@@ -60,4 +60,5 @@ protected:
 	UFUNCTION(Server,Reliable)
 	void Server_StopMove();
 #pragma endregion
+	
 };
