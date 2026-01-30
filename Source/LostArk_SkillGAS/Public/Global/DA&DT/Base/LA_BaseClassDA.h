@@ -37,4 +37,6 @@ public:
 	TMap<FGameplayTag, FDataTableRowHandle> BaseClassData;
 	UPROPERTY(EditAnywhere,Category="Mesh")
 	TObjectPtr<USkeletalMesh> BaseClassMesh;
+	UPROPERTY(EditAnywhere, Category="Animations")
+	TSubclassOf<UAnimInstance> BaseAnimClass;
 };
