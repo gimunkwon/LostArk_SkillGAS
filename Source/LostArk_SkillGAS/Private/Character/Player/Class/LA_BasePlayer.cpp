@@ -1,26 +1,38 @@
 ﻿#include "Character/Player/Class/LA_BasePlayer.h"
 
 #include "AbilitySystemComponent.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "PlayerState/LA_PlayerState.h"
 
 ALA_BasePlayer::ALA_BasePlayer()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+#pragma region Camera,SpringArm
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(RootComponent);
 	SpringArmComponent->TargetArmLength = 600.f;
 	SpringArmComponent->bDoCollisionTest = false;
+	SpringArmComponent->bInheritPitch = false;
+	SpringArmComponent->bInheritRoll = false;
+	SpringArmComponent->bInheritYaw = false;
 	SpringArmComponent->SetRelativeRotation(FRotator(-60.f,0.f,0.f));
 	TopDownCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	TopDownCamera->SetupAttachment(SpringArmComponent);
+	TopDownCamera->bUsePawnControlRotation = false;
+#pragma endregion
 	
-}
-
-void ALA_BasePlayer::BeginPlay()
-{
-	Super::BeginPlay();
+#pragma region Movement,Rotation
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
+	bReplicates = true; // 액터 복제 활성화
+	GetCharacterMovement()->SetIsReplicated(true);
+	AActor::SetReplicateMovement(true);
+	bIsMovingToPath = false;
+#pragma endregion
 	
 }
 
@@ -39,6 +51,36 @@ void ALA_BasePlayer::OnRep_PlayerState()
 	
 	// 클라이언트 측 GAS 초기화
 	InitAbilityActorInfo();
+}
+
+void ALA_BasePlayer::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ALA_BasePlayer, PathPoints);
+	DOREPLIFETIME(ALA_BasePlayer, bIsMovingToPath);
+}
+
+void ALA_BasePlayer::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+void ALA_BasePlayer::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	if (bIsMovingToPath)
+	{
+		ProcessPathMovement();
+	}
+	
+	if (GEngine)
+	{
+		FString IsMovingToPath = bIsMovingToPath ? TEXT("true") : TEXT("false");
+		GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, IsMovingToPath);
+	}
 }
 
 void ALA_BasePlayer::InitAbilityActorInfo()
@@ -64,8 +106,68 @@ void ALA_BasePlayer::InitAbilityActorInfo()
 	}
 }
 
+// Client
+void ALA_BasePlayer::RequestToMove(FVector TargetLocation)
+{
+	if (IsLocallyControlled())
+	{
+		Server_MoveToLocaiton(TargetLocation);
+	}
+}
 
+// RPC
+void ALA_BasePlayer::Server_MoveToLocaiton_Implementation(FVector TargetLocation)
+{
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	if (!NavSys) return;
+	
+	// 서버의 NavMesh를 사용하여 동기적으로 경로 탐색
+	UNavigationPath* NavPath = NavSys->FindPathToLocationSynchronously(GetWorld(), GetActorLocation(), TargetLocation);
+	
+	if (NavPath && NavPath->IsValid())
+	{
+		PathPoints = NavPath->PathPoints;
+		CurrentWayPointIndex = 1;
+		bIsMovingToPath = true;
+	}
+}
 
+// Client ?
+void ALA_BasePlayer::ProcessPathMovement()
+{
+	UE_LOG(LogTemp, Warning, TEXT("PathPoints Num is %d"),PathPoints.Num());
+	UE_LOG(LogTemp,Warning,TEXT("CurrentWayPointIndex = %d"),CurrentWayPointIndex);
+	if (CurrentWayPointIndex >= PathPoints.Num())
+	{
+		Server_StopMove();
+		return;
+	}
+	
+	FVector CurrentLocation = GetActorLocation();
+	FVector TargetLocation = PathPoints[CurrentWayPointIndex];
+	
+	FVector Direction = TargetLocation - CurrentLocation;
+	float DistanceToTarget = Direction.Size2D();
+	
+	// 높이 차이는 무시하고 방향 계산
+	Direction.Z = 0.f;
+	Direction.Normalize();
+	
+	AddMovementInput(Direction, 1.f);
+	
+	if (DistanceToTarget < 20.f)
+	{
+		CurrentWayPointIndex++;
+	}
+	
+}
 
+void ALA_BasePlayer::Server_StopMove_Implementation()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Server Stop Movement On"));
+	bIsMovingToPath = false;
+	CurrentWayPointIndex = 0;
+	PathPoints.Empty();
+}
 
 
