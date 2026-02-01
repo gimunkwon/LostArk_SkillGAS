@@ -19,9 +19,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// GAS 초기화
 	virtual void InitAbilityActorInfo() override;
+#pragma region Movement
 	// 클라이언트에서 호출할 함수
 	void RequestToMove(FVector TargetLocation);
-#pragma region Movement
 #pragma endregion
 protected:
 	virtual void BeginPlay() override;

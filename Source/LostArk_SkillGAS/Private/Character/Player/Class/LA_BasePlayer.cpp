@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Character/Base/AttributeSet/LA_BaseAttributeSet.h"
 #include "Character/Player/Attribute/LA_ClassAttributeset.h"
+#include "Components/CapsuleComponent.h"
 #include "Controller/Player/LA_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -38,6 +39,18 @@ ALA_BasePlayer::ALA_BasePlayer()
 	AActor::SetReplicateMovement(true);
 	bIsMovingToPath = false;
 #pragma endregion
+#pragma region Collision
+	// 자신의 오브젝트 타입을 Player로 설정
+	GetCapsuleComponent()->SetCollisionObjectType(COLLISION_PLAYER);
+	
+	// 다른 Player 채널에 대해서는 무시하도록 설정
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PLAYER, ECR_Overlap);
+	
+	// 환경이나 몬스터는 막아야함
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_ENVIRONMENT, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_MONSTER,ECR_Block);
+	
+#pragma endregion 
 	
 }
 
@@ -137,7 +150,7 @@ void ALA_BasePlayer::InitAbilityActorInfo()
 								}
 							});
 						
-						ASC->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda(
+						ASC->GetGameplayAttributeValueChangeDelegate(CAS->GetManaAttribute()).AddLambda(
 							[this, HUD, CAS](const FOnAttributeChangeData& Data)
 							{
 								if (HUD->PlayerHUDWidget)
