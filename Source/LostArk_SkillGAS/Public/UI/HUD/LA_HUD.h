@@ -18,8 +18,19 @@ public:
 	
 	UPROPERTY()
 	TObjectPtr<ULA_PlayerHUDWidget> PlayerHUDWidget;
-protected:
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
 	
+	// 컨텍스트 메뉴를 띄우는 인터페이스
+	void ShowContextMenu();
+	// 메뉴 닫기
+	void HideContextMenu();
+protected:
+	UPROPERTY(EditAnywhere, Category="UI")
+	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
+	// 컨택스트 메뉴 위젯클래스
+	UPROPERTY(EditAnywhere, Category="UI|ContextMenu")
+	TSubclassOf<UUserWidget> ContextMenuClass;
+	
+private:
+	UPROPERTY()
+	TObjectPtr<UUserWidget> ContextMenuWidget;
 };
