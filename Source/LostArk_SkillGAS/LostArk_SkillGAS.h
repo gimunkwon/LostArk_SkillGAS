@@ -13,3 +13,8 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 #define COLLISION_PLAYER		ECC_GameTraceChannel1
 #define COLLISION_MONSTER		ECC_GameTraceChannel2
 #define COLLISION_ENVIRONMENT	ECC_GameTraceChannel3
+
+// GamePlayTag
+#define ADD_TAG(TagVariable, TagString) \
+	TagVariable = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(TagString))
+	
