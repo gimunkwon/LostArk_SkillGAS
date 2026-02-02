@@ -29,7 +29,10 @@ void ALA_PlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	//SelectedClassTag가 네트워크를 타고 복제되도록 등록
 	DOREPLIFETIME(ALA_PlayerState, SelectedClassTag);
+	// 파티 ID 추가
+	DOREPLIFETIME(ALA_PlayerState, PartyID);
 }
+
 
 UAbilitySystemComponent* ALA_PlayerState::GetAbilitySystemComponent() const
 {
@@ -101,4 +104,23 @@ void ALA_PlayerState::InitializeAttributesFromDataTable(FGameplayTag ClassTag)
 	}
 }
 
+#pragma region PartySystem
+
+bool ALA_PlayerState::IsInParty() const
+{
+	if (!AbilitySystemComponent) return false;
+	
+	// 파티장 또는 파티원 태그 중 하나라도 있는지 확인
+	return AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Party.Leader"))) ||
+			AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Party.Member")));
+}
+
+void ALA_PlayerState::OnRep_PartyID()
+{
+	if (PartyID.IsValid())
+	{
+		UE_LOG(LogTemp,Warning,TEXT("나의 파티 ID가 갱신 되었습니다: %s"), *PartyID.ToString());
+	}
+}
+#pragma endregion
 
