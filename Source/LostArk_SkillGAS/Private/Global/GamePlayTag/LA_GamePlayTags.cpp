@@ -1,6 +1,7 @@
 ﻿#include "Global/GamePlayTag/LA_GamePlayTags.h"
 
 #include "GameplayTagsManager.h"
+#include "LostArk_SkillGAS/LostArk_SkillGAS.h"
 
 FLA_GamePlayTags FLA_GamePlayTags::GamePlayTags;
 
@@ -11,22 +12,31 @@ void FLA_GamePlayTags::InitializeNativeTags()
 	// 에디터에서 Class.Warrior.xx 로 보이게 등록
 #pragma region PlayerClass
 	/*----------전사----------*/
-	GamePlayTags.Class_Warrior = Manager.AddNativeGameplayTag(FName("Class.Warrior"));
-	GamePlayTags.Class_Warrior_Berserker = Manager.AddNativeGameplayTag(FName("Class.Warrior.Berserker"));
-	GamePlayTags.Class_Warrior_HolyKnight = Manager.AddNativeGameplayTag(FName("Class.Warrior.HolyKnight"));
+	ADD_TAG(GamePlayTags.Class_Warrior, "Class.Warrior");
+	ADD_TAG(GamePlayTags.Class_Warrior_Berserker, "Class.Warrior.Berserker");
+	ADD_TAG(GamePlayTags.Class_Warrior_HolyKnight, "Class.Warrior.HolyKnight");
 	/*----------마법사----------*/
-	GamePlayTags.Class_Magician = Manager.AddNativeGameplayTag(FName("Class.Magician"));
-	GamePlayTags.Class_Magician_Sorceress = Manager.AddNativeGameplayTag(FName("Class.Magician.Sorceress"));
-	GamePlayTags.Class_Magician_Summoner = Manager.AddNativeGameplayTag(FName("Class.Magician.Summoner"));
+	ADD_TAG(GamePlayTags.Class_Magician, "Class.Magician");
+	ADD_TAG(GamePlayTags.Class_Magician_Sorceress, "Class.Magician.Sorceress");
+	ADD_TAG(GamePlayTags.Class_Magician_Summoner, "Class.Magician.Summoner");
 #pragma endregion 
 #pragma region Monster
 	/*----------군단장----------*/
-	GamePlayTags.Monster_Commander = Manager.AddNativeGameplayTag(FName("Monster.Commander"));
-	GamePlayTags.Monster_Commander_Karmen = Manager.AddNativeGameplayTag(FName("Monster.Commander.Karmen"));
+	ADD_TAG(GamePlayTags.Monster_Commander, "Monster.Commander");
+	ADD_TAG(GamePlayTags.Monster_Commander_Karmen, "Monster.Commander.Karmen");
 	/*----------일반몬스터----------*/
-	GamePlayTags.Monster_Normal = Manager.AddNativeGameplayTag(FName("Monster.Normal"));
-	GamePlayTags.Monster_Normal_Goblin = Manager.AddNativeGameplayTag(FName("Monster.Normal.Goblin"));
+	ADD_TAG(GamePlayTags.Monster_Normal, "Monster.Normal");
+	ADD_TAG(GamePlayTags.Monster_Normal_Goblin, "Monster.Normal.Goblin");
+#pragma endregion
+	
+#pragma region Party
+	// 파티
+	ADD_TAG(GamePlayTags.State_Party, "State.Party");
+	ADD_TAG(GamePlayTags.State_Party_Leader, "State.Party.Leader");
+	ADD_TAG(GamePlayTags.State_Party_Member, "State.Party.Member");
+	
 #pragma endregion
 	
 	UE_LOG(LogTemp,Warning,TEXT("========InitializeNativeTags ON========"));
 }
+

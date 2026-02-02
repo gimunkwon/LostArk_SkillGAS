@@ -47,7 +47,14 @@ public:
 	FGameplayTag Monster_Normal_Goblin;
 	#pragma endregion
 #pragma endregion
-	
+#pragma region Party
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Party")
+	FGameplayTag State_Party;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Party | Level")
+	FGameplayTag State_Party_Leader; // 파티장
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Party | Level")
+	FGameplayTag State_Party_Member; // 파티원
+#pragma endregion 
 	
 	// 초기화 함수
 	static void InitializeNativeTags();
