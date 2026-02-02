@@ -4,6 +4,8 @@
 #include "GameFramework/HUD.h"
 #include "LA_HUD.generated.h"
 
+class ULA_ContextMenuWidget;
+class ALA_BaseCharacter;
 class ULA_PlayerHUDWidget;
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -20,9 +22,12 @@ public:
 	TObjectPtr<ULA_PlayerHUDWidget> PlayerHUDWidget;
 	
 	// 컨텍스트 메뉴를 띄우는 인터페이스
-	void ShowContextMenu();
+	void ShowContextMenu(ALA_BaseCharacter* TargetPlayer);
 	// 메뉴 닫기
 	void HideContextMenu();
+	
+	// 팝업메뉴
+	void ShowInvitePopUp(ALA_BaseCharacter* Inviter);
 protected:
 	UPROPERTY(EditAnywhere, Category="UI")
 	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
@@ -30,7 +35,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category="UI|ContextMenu")
 	TSubclassOf<UUserWidget> ContextMenuClass;
 	
+	// 초대 팝업 클래스
+	UPROPERTY(EditAnywhere, Category="UI|PopupWidget")
+	TSubclassOf<UUserWidget> InvitePopupClass;
+	
 private:
 	UPROPERTY()
-	TObjectPtr<UUserWidget> ContextMenuWidget;
+	TObjectPtr<ULA_ContextMenuWidget> ContextMenuWidget;
+	UFUNCTION()
+	void HandleInviteRequest(ALA_BaseCharacter* Target);
 };
