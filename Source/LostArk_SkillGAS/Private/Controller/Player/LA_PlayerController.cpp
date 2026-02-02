@@ -1,10 +1,12 @@
 ﻿#include "Controller/Player/LA_PlayerController.h"
 
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/Player/Class/LA_BasePlayer.h"
 #include "LostArk_SkillGAS/LostArk_SkillGAS.h"
+#include "PlayerState/LA_PlayerState.h"
 #include "UI/HUD/LA_HUD.h"
 #include "Windows/WindowsApplication.h"
 
@@ -46,10 +48,10 @@ void ALA_PlayerController::OnInputStarted()
 	{
 		AActor* HitActor = Hit.GetActor();
 		
-		if (HitActor)
-		{
-			UE_LOG(LogTemp,Warning,TEXT("Hit Actor: %s, Channel: Visibility"), *HitActor->GetName());
-		}
+		// if (HitActor)
+		// {
+		// 	UE_LOG(LogTemp,Warning,TEXT("Hit Actor: %s, Channel: Visibility"), *HitActor->GetName());
+		// }
 		
 		// Shift + 우클릭인 경우 : 컨텍스트 메뉴 로직
 		if (bIsShiftDown && HitActor)
@@ -59,7 +61,7 @@ void ALA_PlayerController::OnInputStarted()
 			if (TargetPlayer && TargetPlayer != GetPawn())
 			{
 				UE_LOG(LogTemp,Warning,TEXT("ShowContextMenu"));
-				if (PlayerHUD) PlayerHUD->ShowContextMenu();
+				if (PlayerHUD) PlayerHUD->ShowContextMenu(TargetPlayer);
 				return;
 			}
 		}
@@ -76,3 +78,93 @@ void ALA_PlayerController::OnInputStarted()
 	
 }
 
+#pragma region PartySystem
+void ALA_PlayerController::Server_SendPartyInvite_Implementation(ALA_BaseCharacter* Target)
+{
+	if (!Target) return;
+	
+	ALA_PlayerState* TargetPS = Target->GetPlayerState<ALA_PlayerState>();
+	if (!TargetPS) return;
+	
+	// 상대방이 이미 파티 중인지 확인
+	if (TargetPS->IsInParty())
+	{
+		// 초대자(나)에게 알림 전송
+		UE_LOG(LogTemp,Warning,TEXT("상대방이 이미 파티에 속해있습니다."));
+		return;
+	}
+	
+	// 초대 받을 대상의 Controller 찾기
+	ALA_PlayerController* TargetPC = Cast<ALA_PlayerController>(Target->GetController());
+	
+	if (TargetPC)
+	{
+		TargetPC->Client_SendPartyInvite(Cast<ALA_BaseCharacter>(GetPawn()));
+	}
+}
+
+bool ALA_PlayerController::Server_SendPartyInvite_Validate(ALA_BaseCharacter* Target)
+{
+	return true;
+}
+
+void ALA_PlayerController::Client_SendPartyInvite_Implementation(ALA_BaseCharacter* Inviter)
+{
+	if (ALA_HUD* PlayerHUD = GetHUD<ALA_HUD>())
+	{
+		PlayerHUD->ShowInvitePopUp(Inviter);
+	}
+}
+
+void ALA_PlayerController::Server_ReplyToInvite_Implementation(ALA_BaseCharacter* Inviter, bool bAccepted)
+{
+	if (!Inviter) return;
+	// 초대자(Inviter)의 PlayerState와 ASC가져오기
+	ALA_PlayerState* InviterPS = Inviter->GetPlayerState<ALA_PlayerState>();
+	// 수락자(본인)의 PlayerState와 ASC 가져오기
+	ALA_PlayerState* MyPS = GetPlayerState<ALA_PlayerState>();
+	if (bAccepted)
+	{
+		if (InviterPS && MyPS)
+		{
+			FGuid TargetPartyID;
+			
+			// 초대자가 이미 파티장인가(이미 파티가 있는 경우)
+			if (InviterPS->GetPartID().IsValid())
+			{
+				TargetPartyID = InviterPS->GetPartID();
+			}
+			else
+			{
+				// 새로운 파티 생성 (새로운 GUID 발급)
+				TargetPartyID = FGuid::NewGuid();
+				InviterPS->SetPartID(TargetPartyID);
+				
+				// 초대자에게 파티장 태그 부여
+				if (UAbilitySystemComponent* InviterASC = InviterPS->GetAbilitySystemComponent())
+				{
+					InviterASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Party.Leader")));
+				}
+			}
+			
+			// 수락자(나)에게 동일한 PartyID 설정 및 멤버 태그 부여
+			MyPS->SetPartID(TargetPartyID);
+			if (UAbilitySystemComponent* MyASC = MyPS->GetAbilitySystemComponent())
+			{
+				MyASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Party.Member")));
+			}
+			
+			UE_LOG(LogTemp,Warning,TEXT("파티 결성 완료 ID: %s"), *TargetPartyID.ToString());
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Server : %s declined invite from %s."), *GetName(), *Inviter->GetName());
+	}
+}
+
+bool ALA_PlayerController::Server_ReplyToInvite_Validate(ALA_BaseCharacter* Inviter, bool bAccepted)
+{
+	return true;
+}
+#pragma endregion
