@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/Player/Class/LA_BasePlayer.h"
+#include "GameState/LA_GameState.h"
 #include "LostArk_SkillGAS/LostArk_SkillGAS.h"
 #include "PlayerState/LA_PlayerState.h"
 #include "UI/HUD/LA_HUD.h"
@@ -26,6 +27,7 @@ void ALA_PlayerController::BeginPlay()
 	}
 }
 
+#pragma region InputMapping,InputAction
 void ALA_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -77,8 +79,10 @@ void ALA_PlayerController::OnInputStarted()
 	}
 	
 }
+#pragma endregion 
 
 #pragma region PartySystem
+// 파티요청 ServerRPC
 void ALA_PlayerController::Server_SendPartyInvite_Implementation(ALA_BaseCharacter* Target)
 {
 	if (!Target) return;
@@ -102,12 +106,12 @@ void ALA_PlayerController::Server_SendPartyInvite_Implementation(ALA_BaseCharact
 		TargetPC->Client_SendPartyInvite(Cast<ALA_BaseCharacter>(GetPawn()));
 	}
 }
-
+// 유효성 검사
 bool ALA_PlayerController::Server_SendPartyInvite_Validate(ALA_BaseCharacter* Target)
 {
 	return true;
 }
-
+// 파티요청 ClientRPC
 void ALA_PlayerController::Client_SendPartyInvite_Implementation(ALA_BaseCharacter* Inviter)
 {
 	if (ALA_HUD* PlayerHUD = GetHUD<ALA_HUD>())
@@ -115,7 +119,7 @@ void ALA_PlayerController::Client_SendPartyInvite_Implementation(ALA_BaseCharact
 		PlayerHUD->ShowInvitePopUp(Inviter);
 	}
 }
-
+// 파티수락후 파티생성 ServerRPC
 void ALA_PlayerController::Server_ReplyToInvite_Implementation(ALA_BaseCharacter* Inviter, bool bAccepted)
 {
 	if (!Inviter) return;
@@ -154,6 +158,14 @@ void ALA_PlayerController::Server_ReplyToInvite_Implementation(ALA_BaseCharacter
 				MyASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Party.Member")));
 			}
 			
+			if (ALA_GameState* GS = GetWorld()->GetGameState<ALA_GameState>())
+			{
+				// 초대자 등록 (파티장)
+				GS->RegisterPartyMember(TargetPartyID, InviterPS, true);
+				// 나(수락자) 등록(멤버)
+				GS->RegisterPartyMember(TargetPartyID, MyPS, false);
+			}
+			
 			UE_LOG(LogTemp,Warning,TEXT("파티 결성 완료 ID: %s"), *TargetPartyID.ToString());
 		}
 	}
@@ -162,7 +174,7 @@ void ALA_PlayerController::Server_ReplyToInvite_Implementation(ALA_BaseCharacter
 		UE_LOG(LogTemp,Warning,TEXT("Server : %s declined invite from %s."), *GetName(), *Inviter->GetName());
 	}
 }
-
+// 파티수락후 파티생성 유효성 검사
 bool ALA_PlayerController::Server_ReplyToInvite_Validate(ALA_BaseCharacter* Inviter, bool bAccepted)
 {
 	return true;
