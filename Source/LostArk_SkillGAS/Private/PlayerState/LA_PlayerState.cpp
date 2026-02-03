@@ -121,7 +121,7 @@ void ALA_PlayerState::OnRep_PartyID()
 	if (PartyID.IsValid())
 	{
 		// 이 PlayerState의 주인인 로컬 컨트롤러를 찾음
-		if (APlayerController* PC = Cast<APlayerController>(GetOwner()))
+		if (APlayerController* PC = Cast<APlayerController>(GetOwningController()))
 		{
 			// 로컬 컨트롤러 인지 확인
 			if (PC->IsLocalController())

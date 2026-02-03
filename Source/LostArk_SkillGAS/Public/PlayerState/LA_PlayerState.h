@@ -49,8 +49,6 @@ protected:
 	// 파티 ID
 	UPROPERTY(ReplicatedUsing= OnRep_PartyID, BlueprintReadOnly, Category="Party")
 	FGuid PartyID;
-	UFUNCTION()
-	void OnRep_PartyID();
 #pragma endregion
 public:
 #pragma region GASComponent
@@ -75,6 +73,9 @@ public:
 	bool IsInParty() const;
 	// 서버에 등록된 파티데이터 Getter/Setter 함수
 	void SetPartID(const FGuid& NewID) {PartyID = NewID;}
-	FGuid GetPartID() const {return PartyID;}
+	FGuid GetPartyID() const {return PartyID;}
 #pragma endregion
+public:
+	UFUNCTION()
+	void OnRep_PartyID();
 };
