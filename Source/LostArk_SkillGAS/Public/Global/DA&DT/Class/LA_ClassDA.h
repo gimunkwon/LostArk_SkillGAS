@@ -15,11 +15,11 @@ struct FClassDT : public FTableRowBase
 	UPROPERTY(EditAnywhere,Category="Name")
 	FGameplayTag ClassName;
 	UPROPERTY(EditAnywhere,Category="Stat")
-	float MaxHP;
+	float MaxHP = 0.f;
 	UPROPERTY(EditAnywhere,Category="Stat")
-	float MaxMP;
+	float MaxMP = 0.f;
 	UPROPERTY(EditAnywhere,Category="Stat")
-	float AttackPower;
+	float AttackPower = 0.f;
 	UPROPERTY(EditAnywhere,Category="DataAsset")
 	TSoftObjectPtr<ULA_ClassDA> ClassAsset;
 };

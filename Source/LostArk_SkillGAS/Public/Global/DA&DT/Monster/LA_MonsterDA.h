@@ -16,9 +16,9 @@ public:
 	UPROPERTY(EditAnywhere,Category="Name")
 	FGameplayTag MonsterName;
 	UPROPERTY(EditAnywhere,Category="Stat")
-	float MaxHP;
+	float MaxHP = 0.f;
 	UPROPERTY(EditAnywhere,Category="Stat")
-	float AttackPower;
+	float AttackPower = 0.f;
 	UPROPERTY(EditAnywhere,Category="DataAsset")
 	TSoftObjectPtr<ULA_MonsterDA> MonsterAsset;
 };
