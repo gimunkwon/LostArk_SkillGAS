@@ -4,6 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "Character/Base/AttributeSet/LA_BaseAttributeSet.h"
 #include "Character/Player/Class/LA_BasePlayer.h"
 #include "GameState/LA_GameState.h"
 #include "LostArk_SkillGAS/LostArk_SkillGAS.h"
@@ -134,9 +135,9 @@ void ALA_PlayerController::Server_ReplyToInvite_Implementation(ALA_BaseCharacter
 			FGuid TargetPartyID;
 			
 			// 초대자가 이미 파티장인가(이미 파티가 있는 경우)
-			if (InviterPS->GetPartID().IsValid())
+			if (InviterPS->GetPartyID().IsValid())
 			{
-				TargetPartyID = InviterPS->GetPartID();
+				TargetPartyID = InviterPS->GetPartyID();
 			}
 			else
 			{
@@ -144,15 +145,16 @@ void ALA_PlayerController::Server_ReplyToInvite_Implementation(ALA_BaseCharacter
 				TargetPartyID = FGuid::NewGuid();
 				InviterPS->SetPartID(TargetPartyID);
 				
+				
 				// 초대자에게 파티장 태그 부여
 				if (UAbilitySystemComponent* InviterASC = InviterPS->GetAbilitySystemComponent())
 				{
 					InviterASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Party.Leader")));
 				}
 			}
-			
 			// 수락자(나)에게 동일한 PartyID 설정 및 멤버 태그 부여
 			MyPS->SetPartID(TargetPartyID);
+			
 			if (UAbilitySystemComponent* MyASC = MyPS->GetAbilitySystemComponent())
 			{
 				MyASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Party.Member")));
@@ -178,5 +180,38 @@ void ALA_PlayerController::Server_ReplyToInvite_Implementation(ALA_BaseCharacter
 bool ALA_PlayerController::Server_ReplyToInvite_Validate(ALA_BaseCharacter* Inviter, bool bAccepted)
 {
 	return true;
+}
+#pragma endregion
+
+#pragma region CheatFunc
+void ALA_PlayerController::Cheat_SetHP(float NewHP)
+{
+	// 명령어 호출 시 서버로 Attribute 변경 요청
+	Server_ModifyAttribute(ULA_BaseAttributeSet::GetHealthAttribute(), NewHP);
+}
+
+void ALA_PlayerController::Cheat_Damage(float Amount)
+{
+	if (ALA_PlayerState* PS = GetPlayerState<ALA_PlayerState>())
+	{
+		float CurrentHP = PS->GetBaseAttributeSet()->GetHealth();
+		Server_ModifyAttribute(ULA_BaseAttributeSet::GetHealthAttribute(), CurrentHP - Amount);
+	}
+}
+
+void ALA_PlayerController::Server_ModifyAttribute_Implementation(FGameplayAttribute Attribute, float NewValue)
+{
+	// 서버 권한으로 ASC의 Attribute를 직접 수정
+	if (ALA_PlayerState* PS = GetPlayerState<ALA_PlayerState>())
+	{
+		if (UAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent())
+		{
+			// BaseValue를 직접 수정하여 클라이언트에 복제되도록 함
+			ASC->SetNumericAttributeBase(Attribute, NewValue);
+			
+			UE_LOG(LogTemp,Warning,TEXT("Server: %s's %s Changed to %f"),
+				*GetName(), *Attribute.GetName(), NewValue);
+		}
+	}
 }
 #pragma endregion
