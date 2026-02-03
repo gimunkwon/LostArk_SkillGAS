@@ -84,6 +84,14 @@ void ALA_HUD::ShowPartyWidget()
 		if (PartyWidget && !PartyWidget->IsInViewport())
 		{
 			PartyWidget->AddToViewport();
+			
+			// 데이터 갱신 시작
+			PartyWidget->RefreshPartyList();
+			FTimerHandle RefreshTimer;
+			GetWorld()->GetTimerManager().SetTimer(RefreshTimer, [this]()
+			{
+				if (PartyWidget) PartyWidget->RefreshPartyList();
+			},0.1f,false);
 		}
 	}
 }
