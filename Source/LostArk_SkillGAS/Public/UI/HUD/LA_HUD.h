@@ -4,6 +4,7 @@
 #include "GameFramework/HUD.h"
 #include "LA_HUD.generated.h"
 
+class ULA_PartyWidget;
 class ULA_ContextMenuWidget;
 class ALA_BaseCharacter;
 class ULA_PlayerHUDWidget;
@@ -25,19 +26,25 @@ public:
 	void ShowContextMenu(ALA_BaseCharacter* TargetPlayer);
 	// 메뉴 닫기
 	void HideContextMenu();
-	
 	// 팝업메뉴
 	void ShowInvitePopUp(ALA_BaseCharacter* Inviter);
+	// 파티 위젯
+	void ShowPartyWidget();
 protected:
 	UPROPERTY(EditAnywhere, Category="UI")
 	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
 	// 컨택스트 메뉴 위젯클래스
 	UPROPERTY(EditAnywhere, Category="UI|ContextMenu")
 	TSubclassOf<UUserWidget> ContextMenuClass;
-	
 	// 초대 팝업 클래스
 	UPROPERTY(EditAnywhere, Category="UI|PopupWidget")
 	TSubclassOf<UUserWidget> InvitePopupClass;
+	
+	// 파티 위젯
+	UPROPERTY(EditAnywhere, Category="UI|PartyWidget")
+	TSubclassOf<UUserWidget> PartyWidgetClass;
+	UPROPERTY()
+	TObjectPtr<ULA_PartyWidget> PartyWidget;
 	
 private:
 	UPROPERTY()

@@ -4,6 +4,7 @@
 #include "Controller/Player/LA_PlayerController.h"
 #include "UI/Widget/Player/LA_ContextMenuWidget.h"
 #include "UI/Widget/Player/LA_InvitePopupWidget.h"
+#include "UI/Widget/Player/LA_PartyWidget.h"
 #include "UI/Widget/Player/LA_PlayerHUDWidget.h"
 
 
@@ -69,6 +70,22 @@ void ALA_HUD::ShowInvitePopUp(ALA_BaseCharacter* Inviter)
 		Popup->AddToViewport();
 	}
 	
+}
+
+void ALA_HUD::ShowPartyWidget()
+{
+	if (PartyWidgetClass)
+	{
+		if (!PartyWidget)
+		{
+			PartyWidget = CreateWidget<ULA_PartyWidget>(GetOwningPlayerController(), PartyWidgetClass);
+		}
+		
+		if (PartyWidget && !PartyWidget->IsInViewport())
+		{
+			PartyWidget->AddToViewport();
+		}
+	}
 }
 
 
