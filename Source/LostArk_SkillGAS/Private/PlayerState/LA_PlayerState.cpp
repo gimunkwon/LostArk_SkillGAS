@@ -7,6 +7,7 @@
 #include "Global/DA&DT/Base/LA_BaseClassDA.h"
 #include "Global/DA&DT/Class/LA_ClassDA.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/HUD/LA_HUD.h"
 
 
 ALA_PlayerState::ALA_PlayerState()
@@ -119,7 +120,19 @@ void ALA_PlayerState::OnRep_PartyID()
 {
 	if (PartyID.IsValid())
 	{
-		UE_LOG(LogTemp,Warning,TEXT("나의 파티 ID가 갱신 되었습니다: %s"), *PartyID.ToString());
+		// 이 PlayerState의 주인인 로컬 컨트롤러를 찾음
+		if (APlayerController* PC = Cast<APlayerController>(GetOwner()))
+		{
+			// 로컬 컨트롤러 인지 확인
+			if (PC->IsLocalController())
+			{
+				// HUD 에게 파티 위젯을 띄우라고 요청
+				if (ALA_HUD* PlayerHUD = Cast<ALA_HUD>(PC->GetHUD()))
+				{
+					PlayerHUD->ShowPartyWidget();
+				}
+			}
+		}
 	}
 }
 #pragma endregion
