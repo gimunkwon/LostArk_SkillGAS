@@ -12,7 +12,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "PlayerState/LA_PlayerState.h"
 #include "UI/HUD/LA_HUD.h"
-#include "UI/Widget/Player/LA_PlayerHUDWidget.h"
 
 ALA_BasePlayer::ALA_BasePlayer()
 {
@@ -121,52 +120,26 @@ void ALA_BasePlayer::InitAbilityActorInfo()
 		{
 			PS->InitializeAttributesFromDataTable(ClassTag);
 		}
-		
-		// 로컬 UI 초기화 로직
-		if (IsLocallyControlled())
-		{
-			if (ALA_PlayerController* PC = Cast<ALA_PlayerController>(GetController()))
-			{
-				if (ALA_HUD* HUD = Cast<ALA_HUD>(PC->GetHUD()))
-				{
-					HUD->InitOverlay(PC, PS, ASC, PS->GetBaseAttributeSet());
-					
-					
-					const ULA_BaseAttributeSet* AS = Cast<ULA_BaseAttributeSet>(PS->GetBaseAttributeSet());
-					const ULA_ClassAttributeset* CAS = Cast<ULA_ClassAttributeset>(PS->GetClassAttributeSet());
-					if (AS && HUD->PlayerHUDWidget)
-					{
-						// 2. 초기값 적용
-						HUD->PlayerHUDWidget->UpdateHealth(AS->GetHealth(),AS->GetMaxHealth());
-						HUD->PlayerHUDWidget->UpdateMana(CAS->GetMana(), CAS->GetMaxMP());
-						
-						// 델리게이트 바인딩
-						ASC->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda(
-							[this, HUD, AS](const FOnAttributeChangeData& Data)
-							{
-								if (HUD->PlayerHUDWidget)
-								{
-									HUD->PlayerHUDWidget->UpdateHealth(Data.NewValue , AS->GetMaxHealth());
-								}
-							});
-						
-						ASC->GetGameplayAttributeValueChangeDelegate(CAS->GetManaAttribute()).AddLambda(
-							[this, HUD, CAS](const FOnAttributeChangeData& Data)
-							{
-								if (HUD->PlayerHUDWidget)
-								{
-									HUD->PlayerHUDWidget->UpdateMana(Data.NewValue , CAS->GetMaxMP());
-								}
-							});
-						
-					}
-				}
-			}
-		}
-		
+		InitializeHUDWidget(PS, ASC);
 	}
 }
 
+void ALA_BasePlayer::InitializeHUDWidget(ALA_PlayerState* PS, UAbilitySystemComponent* ASC)
+{
+	// 로컬 UI 초기화 로직
+	if (IsLocallyControlled())
+	{
+		if (ALA_PlayerController* PC = Cast<ALA_PlayerController>(GetController()))
+		{
+			if (ALA_HUD* HUD = Cast<ALA_HUD>(PC->GetHUD()))
+			{
+				HUD->InitOverlay(PC, PS, ASC, PS->GetBaseAttributeSet());
+			}
+		}
+	}
+}
+
+#pragma region Movement
 // Client
 void ALA_BasePlayer::RequestToMove(FVector TargetLocation)
 {
@@ -227,5 +200,5 @@ void ALA_BasePlayer::Server_StopMove_Implementation()
 	CurrentWayPointIndex = 0;
 	PathPoints.Empty();
 }
-
+#pragma endregion 
 

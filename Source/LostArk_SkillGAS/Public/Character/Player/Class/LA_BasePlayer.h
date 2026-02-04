@@ -5,6 +5,8 @@
 #include "Net/UnrealNetwork.h"
 #include "LA_BasePlayer.generated.h"
 
+class ALA_PlayerController;
+class ALA_PlayerState;
 class ULA_BaseClassDA;
 class ULA_ClassAttributeset;
 class UCameraComponent;
@@ -60,5 +62,8 @@ protected:
 	UFUNCTION(Server,Reliable)
 	void Server_StopMove();
 #pragma endregion
+#pragma region HUD,Widget
+	void InitializeHUDWidget(ALA_PlayerState* PS, UAbilitySystemComponent* ASC);
+#pragma endregion 
 	
 };
