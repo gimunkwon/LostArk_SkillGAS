@@ -4,6 +4,7 @@
 #include "GameFramework/HUD.h"
 #include "LA_HUD.generated.h"
 
+class ALA_PlayerState;
 class ULA_SkillWidget;
 class ULA_PartyWidget;
 class ULA_ContextMenuWidget;
@@ -18,7 +19,7 @@ class LOSTARK_SKILLGAS_API ALA_HUD : public AHUD
 	GENERATED_BODY()
 	
 public:
-	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
+	void InitOverlay(APlayerController* PC, ALA_PlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 	
 	UPROPERTY()
 	TObjectPtr<ULA_PlayerHUDWidget> PlayerHUDWidget;

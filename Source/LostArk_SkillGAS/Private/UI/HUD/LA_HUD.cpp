@@ -2,7 +2,10 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Character/Base/AttributeSet/LA_BaseAttributeSet.h"
+#include "Character/Player/Attribute/LA_ClassAttributeset.h"
 #include "Controller/Player/LA_PlayerController.h"
+#include "PlayerState/LA_PlayerState.h"
 #include "UI/Widget/Player/LA_PlayerHUDWidget.h"
 #include "UI/Widget/Player/Party/LA_ContextMenuWidget.h"
 #include "UI/Widget/Player/Party/LA_InvitePopupWidget.h"
@@ -10,13 +13,42 @@
 #include "UI/Widget/Player/Skill/LA_SkillWidget.h"
 
 
-void ALA_HUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
+void ALA_HUD::InitOverlay(APlayerController* PC, ALA_PlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
 	if (PlayerHUDWidgetClass)
 	{
 		PlayerHUDWidget = CreateWidget<ULA_PlayerHUDWidget>(PC, PlayerHUDWidgetClass);
 		PlayerHUDWidget->AddToViewport();
+		
 		// 초기값 설정및 델리게이트 바인딩
+		const ULA_BaseAttributeSet* AS = Cast<ULA_BaseAttributeSet>(PS->GetBaseAttributeSet());
+		const ULA_ClassAttributeset* CAS = Cast<ULA_ClassAttributeset>(PS->GetClassAttributeSet());
+		if (AS && PlayerHUDWidget)
+		{
+			// 2. 초기값 적용
+			PlayerHUDWidget->UpdateHealth(AS->GetHealth(),AS->GetMaxHealth());
+			PlayerHUDWidget->UpdateMana(CAS->GetMana(), CAS->GetMaxMP());
+						
+			// 델리게이트 바인딩
+			ASC->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda(
+				[this, AS](const FOnAttributeChangeData& Data)
+				{
+					if (PlayerHUDWidget)
+					{
+						PlayerHUDWidget->UpdateHealth(Data.NewValue , AS->GetMaxHealth());
+					}
+				});
+						
+			ASC->GetGameplayAttributeValueChangeDelegate(CAS->GetManaAttribute()).AddLambda(
+				[this, CAS](const FOnAttributeChangeData& Data)
+				{
+					if (PlayerHUDWidget)
+					{
+						PlayerHUDWidget->UpdateMana(Data.NewValue , CAS->GetMaxMP());
+					}
+				});
+						
+		}
 	}
 }
 
