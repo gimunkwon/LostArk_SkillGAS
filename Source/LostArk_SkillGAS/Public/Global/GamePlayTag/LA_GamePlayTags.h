@@ -61,10 +61,6 @@ public:
 #pragma region Abilities
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Abilities")
 	FGameplayTag Ability_Dash;
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Abilities")
-	FGameplayTag Ability_Dash_Warrior;
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Abilities")
-	FGameplayTag Ability_Dash_Magician;
 #pragma endregion 
 	// 초기화 함수
 	static void InitializeNativeTags();

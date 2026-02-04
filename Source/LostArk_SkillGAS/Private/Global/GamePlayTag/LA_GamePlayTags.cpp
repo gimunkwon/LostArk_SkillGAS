@@ -38,10 +38,6 @@ void FLA_GamePlayTags::InitializeNativeTags()
 	
 #pragma region Abilities
 	ADD_TAG(GamePlayTags.Ability_Dash, "Ability.Dash");
-	// 전사 대쉬
-	ADD_TAG(GamePlayTags.Ability_Dash_Warrior, "Ability.Dash.Warrior");
-	// 마법사 대쉬
-	ADD_TAG(GamePlayTags.Ability_Dash_Magician, "Ability.Dash.Magician");
 #pragma endregion
 	
 	
