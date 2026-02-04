@@ -4,9 +4,11 @@
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
 #include "Engine/DataTable.h"
+#include "Global/Data/LA_GameData.h"
 #include "LA_ClassDA.generated.h"
 
 class ULA_ClassDA;
+
 
 USTRUCT(BlueprintType)
 struct FClassDT : public FTableRowBase
@@ -20,6 +22,8 @@ struct FClassDT : public FTableRowBase
 	float MaxMP = 0.f;
 	UPROPERTY(EditAnywhere,Category="Stat")
 	float AttackPower = 0.f;
+	UPROPERTY(EditAnywhere,Category="Stat")
+	float DashCoolTime = 0.f;
 	UPROPERTY(EditAnywhere,Category="DataAsset")
 	TSoftObjectPtr<ULA_ClassDA> ClassAsset;
 };
@@ -37,5 +41,7 @@ public:
 		return FPrimaryAssetId("SubClassData",GetFName());
 	}
 	UPROPERTY(EditAnywhere,Category="DataMap | Animations")
-	TMap<FGameplayTag, TSoftObjectPtr<UAnimMontage>> SkillAnimMontageMap;
+	TMap<FGameplayTag, FSkillAttributeInfo> SkillAnimMontageMap;
+	UPROPERTY(EditAnywhere, Category="Animations | Dash")
+	TMap<FGameplayTag, FDashAttributeInfo> DashDataMap;
 };
