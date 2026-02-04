@@ -1,9 +1,9 @@
-﻿#include "UI/Widget/Player/LA_PartyWidget.h"
+﻿#include "UI/Widget/Player/Party/LA_PartyWidget.h"
 
 #include "Components/VerticalBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "PlayerState/LA_PlayerState.h"
-#include "UI/Widget/Player/LA_PartyMemberSlot.h"
+#include "UI/Widget/Player/Party/LA_PartyMemberSlot.h"
 
 void ULA_PartyWidget::RefreshPartyList()
 {

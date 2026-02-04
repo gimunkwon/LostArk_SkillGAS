@@ -2,10 +2,10 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Controller/Player/LA_PlayerController.h"
-#include "UI/Widget/Player/LA_ContextMenuWidget.h"
-#include "UI/Widget/Player/LA_InvitePopupWidget.h"
-#include "UI/Widget/Player/LA_PartyWidget.h"
 #include "UI/Widget/Player/LA_PlayerHUDWidget.h"
+#include "UI/Widget/Player/Party/LA_ContextMenuWidget.h"
+#include "UI/Widget/Player/Party/LA_InvitePopupWidget.h"
+#include "UI/Widget/Player/Party/LA_PartyWidget.h"
 
 
 void ALA_HUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)

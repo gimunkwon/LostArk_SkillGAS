@@ -1,4 +1,4 @@
-﻿#include "UI/Widget/Player/LA_PartyMemberSlot.h"
+﻿#include "UI/Widget/Player/Party/LA_PartyMemberSlot.h"
 
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
