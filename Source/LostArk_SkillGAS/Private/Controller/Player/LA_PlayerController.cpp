@@ -37,6 +37,7 @@ void ALA_PlayerController::SetupInputComponent()
 	{
 		EInputComp->BindAction(IA_ClickToMove,ETriggerEvent::Started,this,&ALA_PlayerController::OnInputStarted);
 		EInputComp->BindAction(IA_ClickToMove, ETriggerEvent::Triggered, this, &ALA_PlayerController::OnInputStarted);
+		EInputComp->BindAction(IA_OpenSkillWidget,ETriggerEvent::Started,this, &ALA_PlayerController::OnInputOpenSkillWidget);
 	}
 }
 
@@ -183,7 +184,17 @@ bool ALA_PlayerController::Server_ReplyToInvite_Validate(ALA_BaseCharacter* Invi
 }
 #pragma endregion
 
+void ALA_PlayerController::OnInputOpenSkillWidget()
+{
+	if (ALA_HUD* PlayerHUD = GetHUD<ALA_HUD>())
+	{
+		PlayerHUD->ToggleSkillWidget();
+	}
+}
+
+
 #pragma region CheatFunc
+
 void ALA_PlayerController::Cheat_SetHP(float NewHP)
 {
 	// 명령어 호출 시 서버로 Attribute 변경 요청
@@ -215,3 +226,4 @@ void ALA_PlayerController::Server_ModifyAttribute_Implementation(FGameplayAttrib
 	}
 }
 #pragma endregion
+

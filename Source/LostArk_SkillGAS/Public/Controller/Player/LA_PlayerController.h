@@ -33,11 +33,17 @@ protected:
 	// Default MappingContext
 	UPROPERTY(EditAnywhere,Category="Input|MappingContext")
 	UInputMappingContext* DefaultMappingContext;
+#pragma region MovingAction
 	// InputAction
 	UPROPERTY(EditAnywhere,Category="Input|InputAction")
 	UInputAction* IA_ClickToMove;
 	// InputAction Binding Function
 	void OnInputStarted();
+#pragma endregion 
+	UPROPERTY(EditAnywhere,Category="Input|InputAction")
+	UInputAction* IA_OpenSkillWidget;
+	
+	void OnInputOpenSkillWidget();
 #pragma endregion
 	
 #pragma region ConsoleExecFunc
