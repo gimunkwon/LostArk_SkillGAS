@@ -31,6 +31,7 @@ public:
 	FGameplayTag Class_Magician_Summoner;
 #pragma endregion
 #pragma endregion 
+	
 #pragma region MonsterClass
 	#pragma region Commander
 	/*--------군단장계열 태그--------*/
@@ -47,6 +48,7 @@ public:
 	FGameplayTag Monster_Normal_Goblin;
 	#pragma endregion
 #pragma endregion
+	
 #pragma region Party
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Party")
 	FGameplayTag State_Party;
@@ -56,6 +58,14 @@ public:
 	FGameplayTag State_Party_Member; // 파티원
 #pragma endregion 
 	
+#pragma region Abilities
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Abilities")
+	FGameplayTag Ability_Dash;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Abilities")
+	FGameplayTag Ability_Dash_Warrior;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="Abilities")
+	FGameplayTag Ability_Dash_Magician;
+#pragma endregion 
 	// 초기화 함수
 	static void InitializeNativeTags();
 private:

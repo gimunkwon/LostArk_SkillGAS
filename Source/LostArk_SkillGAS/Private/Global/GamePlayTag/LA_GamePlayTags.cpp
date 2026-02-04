@@ -34,8 +34,16 @@ void FLA_GamePlayTags::InitializeNativeTags()
 	ADD_TAG(GamePlayTags.State_Party, "State.Party");
 	ADD_TAG(GamePlayTags.State_Party_Leader, "State.Party.Leader");
 	ADD_TAG(GamePlayTags.State_Party_Member, "State.Party.Member");
-	
 #pragma endregion
+	
+#pragma region Abilities
+	ADD_TAG(GamePlayTags.Ability_Dash, "Ability.Dash");
+	// 전사 대쉬
+	ADD_TAG(GamePlayTags.Ability_Dash_Warrior, "Ability.Dash.Warrior");
+	// 마법사 대쉬
+	ADD_TAG(GamePlayTags.Ability_Dash_Magician, "Ability.Dash.Magician");
+#pragma endregion
+	
 	
 	UE_LOG(LogTemp,Warning,TEXT("========InitializeNativeTags ON========"));
 }
