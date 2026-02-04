@@ -4,6 +4,7 @@
 #include "GameFramework/HUD.h"
 #include "LA_HUD.generated.h"
 
+class ULA_SkillWidget;
 class ULA_PartyWidget;
 class ULA_ContextMenuWidget;
 class ALA_BaseCharacter;
@@ -31,6 +32,9 @@ public:
 	// 파티 위젯
 	void ShowPartyWidget();
 #pragma endregion
+#pragma region SkillWidgetFunc
+	void ToggleSkillWidget();
+#pragma endregion 
 protected:
 #pragma region MainWidget
 	UPROPERTY(EditAnywhere, Category="UI")
@@ -50,7 +54,10 @@ protected:
 	TObjectPtr<ULA_PartyWidget> PartyWidget;
 #pragma endregion
 #pragma region SkillWidget
-	// UPROPERTY(EditAnywhere,Category="UI|SkillWidget")
+	UPROPERTY(EditAnywhere,Category="UI|SkillWidget")
+	TSubclassOf<UUserWidget> SkillWidgetClass;
+	UPROPERTY()
+	TObjectPtr<ULA_SkillWidget> SkillWidget;
 #pragma endregion 
 private:
 	UPROPERTY()
