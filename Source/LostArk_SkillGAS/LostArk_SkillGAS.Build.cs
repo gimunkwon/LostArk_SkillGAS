@@ -13,7 +13,7 @@ public class LostArk_SkillGAS : ModuleRules
 			, "Engine", "InputCore"
 			, "EnhancedInput","UMG"
 			, "GameplayAbilities","GameplayTags","GameplayTasks"
-			,"NavigationSystem","AIModule"
+			,"NavigationSystem","AIModule","Slate","SlateCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
